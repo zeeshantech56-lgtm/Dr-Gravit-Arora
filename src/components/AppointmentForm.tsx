@@ -84,7 +84,7 @@ export default function AppointmentForm() {
       const refCode = 'OPD-' + Math.floor(100000 + Math.random() * 900000);
       
       const formData = {
-        access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY,
+        access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || "d2d139b4-8ed7-4ab4-a3e1-698f01725a18",
         subject: `New Appointment Request from ${form.name}`,
         from_name: "Dr. Garvit Arora Website",
         ...form,
