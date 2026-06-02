@@ -69,7 +69,7 @@ export default function AppointmentForm() {
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validate()) {
@@ -80,27 +80,43 @@ export default function AppointmentForm() {
 
     setIsSubmitting(true);
 
-    // Simulate high-end clinical queuing delay
-    setTimeout(() => {
-      // Save data locally to demonstrate a real interactive persistence layer
-      const appointmentHistory = JSON.parse(localStorage.getItem('arora_appointments') || '[]');
+    try {
       const refCode = 'OPD-' + Math.floor(100000 + Math.random() * 900000);
       
-      const newBooking = {
+      const formData = {
+        access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY,
+        subject: `New Appointment Request from ${form.name}`,
+        from_name: "Dr. Garvit Arora Website",
         ...form,
-        id: refCode,
-        timestamp: new Date().toISOString(),
-        doctor: 'Dr. Garvit Arora'
+        VoucherID: refCode
       };
 
-      appointmentHistory.push(newBooking);
-      localStorage.setItem('arora_appointments', JSON.stringify(appointmentHistory));
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
-      setTicketId(refCode);
+      const result = await response.json();
+
+      if (result.success) {
+        setTicketId(refCode);
+        setIsSubmitting(false);
+        setIsSubmitted(true);
+        setForm(initialForm);
+      } else {
+        console.error("Web3Forms Error:", result);
+        alert("Something went wrong while submitting the form. Please try again later.");
+        setIsSubmitting(false);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Network error. Please check your connection and try again.");
       setIsSubmitting(false);
-      setIsSubmitted(true);
-      setForm(initialForm);
-    }, 1400);
+    }
   };
 
   return (
