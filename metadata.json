@@ -1,0 +1,6 @@
+{
+  "name": "Dr. Garvit Arora",
+  "description": "Premium medical website and consultation scheduling for Dr. Garvit Arora, General Physician & Consultant at Phoenix Hospital, Indore.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
